@@ -35,7 +35,7 @@ export default function App() {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data, model: aiModel })
+        body: JSON.stringify({ mode: 'manual', data, model: aiModel })
       });
       const resultObj = await response.json();
       if (!response.ok) throw new Error(resultObj.error || 'Analysis failed');
@@ -52,41 +52,16 @@ export default function App() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const urlInput = formData.get('urlInput') as string;
-    const askingPrice = formData.get('askingPrice') as string;
-    const mileage = formData.get('mileage') as string;
-    const condition = formData.get('condition') as string;
     
     setScrapeError(null);
-    setLoadingMsg('SCRAPING LISTING DETAILS...');
+    setLoadingMsg('USING AI TO ANALYSE DEAL...');
     setView('loading');
     
     try {
-      const scrapeResp = await fetch('/api/scrape', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: urlInput })
-      });
-      
-      const scrapeData = await scrapeResp.json();
-      
-      if (!scrapeResp.ok) {
-        throw new Error(scrapeData.error || 'Failed to scrape listing');
-      }
-      
-      setLoadingMsg('USING AI TO ANALYSE DEAL...');
-      
-      const analysisData = {
-        scrapedUrl: urlInput,
-        manualAskingPrice: askingPrice,
-        manualMileage: mileage,
-        manualCondition: condition,
-        ...scrapeData.data
-      };
-
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: analysisData, model: aiModel })
+        body: JSON.stringify({ mode: 'url', url: urlInput, model: aiModel })
       });
       
       const resultObj = await response.json();
@@ -227,11 +202,11 @@ export default function App() {
                   </div>
                   <div className="flex flex-col">
                     <label className="font-mono text-[11px] uppercase tracking-[2px] text-muted mb-3">MILEAGE (KM)</label>
-                    <input type="number" name="mileage" required className="hairline-input" placeholder="0" min="0" />
+                    <input type="text" name="mileage" required className="hairline-input" placeholder="e.g. 50000 - 60000" />
                   </div>
                   <div className="flex flex-col">
-                    <label className="font-mono text-[11px] uppercase tracking-[2px] text-muted mb-3">ASKING PRICE ($)</label>
-                    <input type="number" name="askingPrice" required className="hairline-input" placeholder="0" min="0" />
+                    <label className="font-mono text-[11px] uppercase tracking-[2px] text-muted mb-3">ASKING PRICE</label>
+                    <input type="text" name="askingPrice" required className="hairline-input" placeholder="e.g. RM 50000 - 60000" />
                   </div>
                   <div className="flex flex-col">
                     <label className="font-mono text-[11px] uppercase tracking-[2px] text-muted mb-3">CONDITION</label>
@@ -311,36 +286,15 @@ export default function App() {
                   <label className="font-mono text-[11px] uppercase tracking-[2px] text-muted mb-3">LISTING URL</label>
                   <input type="url" name="urlInput" required className="hairline-input" placeholder="PASTE LISTING URL" />
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-                  <div className="flex flex-col">
-                    <label className="font-mono text-[11px] uppercase tracking-[2px] text-muted mb-3">ASKING PRICE ($)</label>
-                    <input type="number" name="askingPrice" required className="hairline-input" placeholder="0" min="0" />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="font-mono text-[11px] uppercase tracking-[2px] text-muted mb-3">MILEAGE (KM)</label>
-                    <input type="number" name="mileage" required className="hairline-input" placeholder="0" min="0" />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="font-mono text-[11px] uppercase tracking-[2px] text-muted mb-3">CONDITION</label>
-                    <select name="condition" required className="hairline-input cursor-pointer" defaultValue="">
-                      <option value="" disabled>SELECT</option>
-                      <option value="EXCELLENT">EXCELLENT</option>
-                      <option value="GOOD">GOOD</option>
-                      <option value="FAIR">FAIR</option>
-                      <option value="POOR">POOR</option>
-                    </select>
-                  </div>
-                </div>
 
                 <div className="text-center mb-12">
                   <p className="font-mono text-[11px] uppercase tracking-[2px] text-muted-soft">
-                    WE DO NOT SCRAPE THE LISTING. AI ANALYSES THE DETAILS YOU PROVIDE.
+                    WE WILL AUTOMATICALLY ANALYSE THE PRICE, MILEAGE AND CONDITION USING AI.
                   </p>
                 </div>
 
                 <button type="submit" className="w-full font-mono text-[12px] uppercase tracking-[2px] text-ink border border-ink rounded-full py-4 text-center hover:opacity-70 transition-opacity">
-                  ANALYSE LISTING
+                  SEARCH & ANALYSE THIS CAR
                 </button>
               </form>
             )}
