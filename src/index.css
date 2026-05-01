@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400&family=EB+Garamond:wght@400&family=Space+Mono:wght@400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Cormorant Garamond", serif;
+  --font-body: "EB Garamond", serif;
+  --font-mono: "Space Mono", monospace;
+
+  --color-canvas: #000000;
+  --color-surface-soft: #0d0d0d;
+  --color-surface-card: #141414;
+  --color-surface-elevated: #1f1f1f;
+  --color-hairline: #262626;
+  --color-hairline-strong: #3a3a3a;
+  
+  --color-ink: #ffffff;
+  --color-body-text: #cccccc;
+  --color-body-strong: #e6e6e6;
+  --color-muted: #999999;
+  --color-muted-soft: #666666;
+  
+  --color-accent: #c3d9f3;
+  --color-warning: #d4a017;
+  --color-success: #5fa657;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Input Styles */
+.hairline-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-hairline-strong);
+  color: var(--color-ink);
+  border-radius: 0;
+  padding: 8px 0;
+  width: 100%;
+  transition: border-color 0.3s ease;
+  appearance: none;
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+.hairline-input:focus {
+  outline: none;
+  box-shadow: none;
+  border-bottom-color: var(--color-ink);
+}
+.hairline-input::placeholder {
+  color: var(--color-muted-soft);
+}
+
+/* Select specific styling */
+select.hairline-input {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='1' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 1em;
+}
+select.hairline-input:focus {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1' stroke-linecap='square' stroke-linejoin='miter'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+select.hairline-input option {
+  background-color: var(--color-surface-card);
+  color: var(--color-ink);
+}
+
+/* Base button resets for consistency with design rules */
+button {
+  font-weight: 400 !important;
+}
+
+/* Animations */
+@keyframes progress-slide {
+  0% { transform: translateX(-100%); width: 10%; }
+  50% { width: 50%; }
+  100% { transform: translateX(200%); width: 10%; }
+}
+.animate-progress-slide {
+  animation: progress-slide 2s ease-in-out infinite;
+}
